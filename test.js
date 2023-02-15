@@ -1,3 +1,8 @@
+let playerScore = 0;
+let computerScore = 0;
+let playCount = 0;
+
+
 function getComputerChoice() {
     let randNumber = Math.floor(Math.random() * 3);
     if (randNumber == 0) {
@@ -13,54 +18,62 @@ function playRound(playerSelection, computerSelection) {
     player = playerSelection.toLowerCase();
     computer = computerSelection.toLowerCase();
 
+
     if (player == "rock") {
         if (computer == "rock") {
             return "Tie!"
         } else if (computer == "paper") {
+            computerScore+=1;
             return "You lose! Paper beats Rock!"
         } else {
+            playerScore+=1;
             return "You win! Rock beats Scissors!"
         }
     } else if (player == "paper") {
         if (computer == "rock") {
+            playerScore+=1;
             return "You win! Paper beats rock!"
         } else if (computer == "paper") {
             return "Tie!"
         } else {
+            computerScore+=1;
             return "You lose! Scissors beats paper!"
         }
     } else if (player == "scissors") {
         if (computer == "rock") {
+            computerScore+=1;
             return "You lose! Rock beats scissors!"
         } else if (computer == "paper") {
+            playerScore+=1;
             return "You win! Scissors beats paper!"
         } else {
             return "Tie!"
         }
     }
+
 }
 
 function game() {
-    let playerScore = 0;
-    let computerScore = 0;
+    let computerSelection = getComputerChoice();
 
-    for (let i = 0; i < 5; i++) {
-        const playerSelection = prompt("Enter rock, paper, or scissors");
-        const computerSelection = getComputerChoice();
+    const buttons = document.querySelectorAll('button');
+    buttons.forEach((button) => {
 
-        let result = playRound(playerSelection, computerSelection);
-        console.log(result);
+        button.addEventListener('click', () => {
+           playRound(button.id, getComputerChoice());
+           playCount+=1;
 
-        if (result.includes("win") == true) {
-            playerScore++;
-        } else if (result.includes("lose") == true) {
-            computerScore++;
-        } else {
-        }
-    }
+           const score = document.querySelector('.results');
+           score.textContent = (`Current score is player: ${playerScore} to computer: ${computerScore}`);
 
-    console.log(`Final Score is player: ${playerScore} to computer: ${computerScore}`);
-    (playerScore <= computerScore) ? console.log("You LOSE!!!") : console.log("YOU WIN!!!");
+           if (playerScore == 5 || computerScore == 5) {
+            (playerScore <= computerScore) ? score.textContent = "You LOSE!!! Refresh to play again" : score.textContent = "YOU WIN!!! Refresh to play again";
+            document.getElementById("button").disabled = true;
+
+           }
+        });
+    });
+
 }
 
 game();
